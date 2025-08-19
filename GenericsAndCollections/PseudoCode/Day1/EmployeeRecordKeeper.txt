@@ -1,0 +1,19 @@
+ALGORITHM EmployeeRecordKeeper
+START
+    CREATE Class Employee
+        ATTRIBUTES: name, department
+        CONSTRUCTOR(name, department)
+    END CLASS
+
+    CREATE ArrayList employees
+
+    FUNCTION addEmployee(name, department)
+        CREATE new Employee object
+        ADD employee TO employees
+    END FUNCTION
+
+    FUNCTION filterByDepartment(departmentName)
+        filteredList ← FILTER employees WHERE employee.department = departmentName USING stream
+        PRINT details of employees in filteredList
+    END FUNCTION
+END

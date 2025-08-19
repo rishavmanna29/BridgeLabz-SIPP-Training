@@ -1,0 +1,25 @@
+ALGORITHM HospitalDepartmentMapper
+START
+    CLASS Doctor
+        ATTRIBUTES: name, specialization
+        CONSTRUCTOR(name, specialization)
+    END CLASS
+
+    CLASS Hospital
+        ATTRIBUTE: departmentMap MAP<String, List<Doctor>>
+
+        METHOD addDoctor(departmentName, doctor)
+            IF departmentName NOT IN departmentMap THEN
+                CREATE empty list FOR departmentName
+            END IF
+            ADD doctor TO departmentMap[departmentName]
+        END METHOD
+
+        METHOD filterBySpecialization(specialization)
+            FOR EACH department IN departmentMap
+                filteredDoctors ← FILTER doctors IN department WHERE doctor.specialization = specialization
+                PRINT department + ": " + filteredDoctors
+            END FOR
+        END METHOD
+    END CLASS
+END
