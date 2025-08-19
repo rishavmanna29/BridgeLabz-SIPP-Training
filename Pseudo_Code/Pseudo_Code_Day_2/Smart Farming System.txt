@@ -1,0 +1,57 @@
+ABSTRACT CLASS Crop
+    ATTRIBUTES:
+        name
+        growthDuration   // in days
+    
+    CONSTRUCTOR Crop(name, growthDuration):
+        this.name = name
+        this.growthDuration = growthDuration
+    
+    ABSTRACT METHOD waterRequirement()
+    ABSTRACT METHOD harvest()
+    
+    METHOD displayInfo():
+        PRINT "Crop: " + name
+        PRINT "Growth Duration: " + growthDuration + " days"
+END CLASS
+
+
+CLASS Rice EXTENDS Crop
+    CONSTRUCTOR Rice(growthDuration):
+        CALL Crop("Rice", growthDuration)
+    
+    METHOD waterRequirement():
+        PRINT "Rice needs high water supply (about 1200mm per season)."
+    
+    METHOD harvest():
+        PRINT "Rice is ready to harvest after " + growthDuration + " days."
+END CLASS
+
+
+CLASS Wheat EXTENDS Crop
+    CONSTRUCTOR Wheat(growthDuration):
+        CALL Crop("Wheat", growthDuration)
+    
+    METHOD waterRequirement():
+        PRINT "Wheat needs moderate water supply (about 450mm per season)."
+    
+    METHOD harvest():
+        PRINT "Wheat is ready to harvest after " + growthDuration + " days."
+END CLASS
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    crop1 = NEW Rice(120)
+    crop2 = NEW Wheat(90)
+    
+    PRINT "Smart Farming System"
+    
+    CALL crop1.displayInfo()
+    CALL crop1.waterRequirement()
+    CALL crop1.harvest()
+    
+    CALL crop2.displayInfo()
+    CALL crop2.waterRequirement()
+    CALL crop2.harvest()
+END FUNCTION

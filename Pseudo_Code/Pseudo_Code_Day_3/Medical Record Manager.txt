@@ -1,0 +1,118 @@
+INTERFACE Searchable
+    METHOD search(keyword)
+END INTERFACE
+
+INTERFACE Printable
+    METHOD print()
+END INTERFACE
+
+
+ABSTRACT CLASS MedicalReport IMPLEMENTS Searchable, Printable
+    ATTRIBUTES:
+        reportID
+        patientName
+        date
+    
+    CONSTRUCTOR MedicalReport(reportID, patientName, date):
+        this.reportID = reportID
+        this.patientName = patientName
+        this.date = date
+END CLASS
+
+
+CLASS LabReport EXTENDS MedicalReport
+    ATTRIBUTE:
+        testType
+        result
+    
+    CONSTRUCTOR LabReport(reportID, patientName, date, testType, result):
+        CALL MedicalReport(reportID, patientName, date)
+        this.testType = testType
+        this.result = result
+    
+    METHOD search(keyword):
+        IF keyword IN testType OR keyword IN result THEN
+            RETURN true
+        ELSE
+            RETURN false
+    
+    METHOD print():
+        PRINT "---- Lab Report ----"
+        PRINT "ID: " + reportID
+        PRINT "Patient: " + patientName
+        PRINT "Date: " + date
+        PRINT "Test: " + testType
+        PRINT "Result: " + result
+END CLASS
+
+
+CLASS Prescription EXTENDS MedicalReport
+    ATTRIBUTE:
+        medicines
+    
+    CONSTRUCTOR Prescription(reportID, patientName, date, medicines):
+        CALL MedicalReport(reportID, patientName, date)
+        this.medicines = medicines
+    
+    METHOD search(keyword):
+        IF keyword IN medicines THEN
+            RETURN true
+        ELSE
+            RETURN false
+    
+    METHOD print():
+        PRINT "---- Prescription ----"
+        PRINT "ID: " + reportID
+        PRINT "Patient: " + patientName
+        PRINT "Date: " + date
+        PRINT "Medicines: " + medicines
+END CLASS
+
+
+CLASS DischargeSummary EXTENDS MedicalReport
+    ATTRIBUTE:
+        diagnosis
+        advice
+    
+    CONSTRUCTOR DischargeSummary(reportID, patientName, date, diagnosis, advice):
+        CALL MedicalReport(reportID, patientName, date)
+        this.diagnosis = diagnosis
+        this.advice = advice
+    
+    METHOD search(keyword):
+        IF keyword IN diagnosis OR keyword IN advice THEN
+            RETURN true
+        ELSE
+            RETURN false
+    
+    METHOD print():
+        PRINT "---- Discharge Summary ----"
+        PRINT "ID: " + reportID
+        PRINT "Patient: " + patientName
+        PRINT "Date: " + date
+        PRINT "Diagnosis: " + diagnosis
+        PRINT "Advice: " + advice
+END CLASS
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    reports = []
+    
+    r1 = NEW LabReport("R001", "Amit", "2025-08-19", "Blood Test", "Normal")
+    r2 = NEW Prescription("R002", "Amit", "2025-08-19", ["Paracetamol", "Vitamin C"])
+    r3 = NEW DischargeSummary("R003", "Amit", "2025-08-19", "Fever", "Rest for 5 days")
+    
+    ADD r1 TO reports
+    ADD r2 TO reports
+    ADD r3 TO reports
+    
+    PRINT "---- Printing Reports ----"
+    FOR each report IN reports:
+        CALL report.print()
+    
+    PRINT "---- Searching for 'Fever' ----"
+    FOR each report IN reports:
+        IF report.search("Fever") THEN
+            PRINT "Found in Report ID: " + report.reportID
+END FUNCTION
