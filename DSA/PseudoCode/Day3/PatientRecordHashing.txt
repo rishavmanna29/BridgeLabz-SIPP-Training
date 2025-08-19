@@ -1,0 +1,27 @@
+ALGORITHM PatientRecordHashing
+START
+    CLASS Patient
+        ATTRIBUTES: patientID, name, age, ailment
+        CONSTRUCTOR(patientID, name, age, ailment)
+    END CLASS
+
+    CLASS PatientManager
+        ATTRIBUTE: patientsMap HASHMAP<patientID, Patient>
+
+        METHOD addPatient(patient)
+            INSERT patient.patientID → patient INTO patientsMap
+        END METHOD
+
+        METHOD retrievePatient(patientID)
+            RETURN patientsMap[patientID]
+        END METHOD
+
+        METHOD updatePatient(patientID, updatedPatient)
+            SET patientsMap[patientID] = updatedPatient
+        END METHOD
+
+        METHOD deletePatient(patientID)
+            REMOVE patientsMap[patientID]
+        END METHOD
+    END CLASS
+END

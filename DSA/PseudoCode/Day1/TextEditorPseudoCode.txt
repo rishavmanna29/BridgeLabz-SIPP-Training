@@ -1,0 +1,18 @@
+ALGORITHM TextEditorUndo
+START
+    CREATE an empty Stack called operations
+
+    FUNCTION type(text)
+        PUSH text INTO operations
+        PRINT "Typed: " + text
+    END FUNCTION
+
+    FUNCTION undo()
+        IF operations is NOT EMPTY THEN
+            lastOperation ← POP from operations
+            PRINT "Undo: " + lastOperation
+        ELSE
+            PRINT "Nothing to undo"
+        END IF
+    END FUNCTION
+END

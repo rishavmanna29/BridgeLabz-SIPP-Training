@@ -1,0 +1,25 @@
+ALGORITHM CallCenterQueue
+START
+    CREATE Queue normalQueue
+    CREATE Queue emergencyQueue
+
+    FUNCTION addCustomer(name, priority)
+        IF priority = "emergency" THEN
+            ENQUEUE name INTO emergencyQueue
+        ELSE
+            ENQUEUE name INTO normalQueue
+        END IF
+    END FUNCTION
+
+    FUNCTION serveCustomer()
+        IF emergencyQueue is NOT EMPTY THEN
+            customer ← DEQUEUE from emergencyQueue
+            PRINT "Serving Emergency Customer: " + customer
+        ELSE IF normalQueue is NOT EMPTY THEN
+            customer ← DEQUEUE from normalQueue
+            PRINT "Serving Normal Customer: " + customer
+        ELSE
+            PRINT "No customers waiting"
+        END IF
+    END FUNCTION
+END

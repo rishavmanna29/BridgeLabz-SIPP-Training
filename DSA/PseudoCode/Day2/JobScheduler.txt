@@ -1,0 +1,22 @@
+ALGORITHM JobScheduler
+START
+    CLASS Job
+        ATTRIBUTES: jobName, deadline, processingTime
+        CONSTRUCTOR(jobName, deadline, processingTime)
+    END CLASS
+
+    CLASS Scheduler
+        ATTRIBUTE: PriorityQueue jobs   // ordered by deadline, then processing time
+
+        METHOD addJob(job)
+            INSERT job INTO jobs
+        END METHOD
+
+        METHOD processJobs()
+            WHILE jobs is NOT EMPTY
+                job ← REMOVE highest priority job FROM jobs
+                PRINT "Processing: " + job.jobName
+            END WHILE
+        END METHOD
+    END CLASS
+END
