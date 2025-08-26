@@ -1,0 +1,74 @@
+INTERFACE DiagnosisStrategy
+    METHOD diagnose(symptoms : List<String>) RETURNS List<String>
+END INTERFACE
+
+
+CLASS RuleBasedDiagnosis IMPLEMENTS DiagnosisStrategy
+    METHOD diagnose(symptoms):
+        IF ("fever" IN symptoms AND "cough" IN symptoms AND "fatigue" IN symptoms):
+            RETURN ["Flu", "COVID-19"]
+        ELSE:
+            RETURN ["No clear match (rule-based)"]
+END CLASS
+
+
+CLASS AIBasedDiagnosis IMPLEMENTS DiagnosisStrategy
+    METHOD diagnose(symptoms):
+        // Pretend AI logic with ML model
+        IF ("headache" IN symptoms AND "dizziness" IN symptoms AND "nausea" IN symptoms):
+            RETURN ["Migraine", "Vertigo"]
+        ELSE:
+            RETURN ["No prediction (AI-based)"]
+END CLASS
+
+
+CLASS ProbabilityBasedDiagnosis IMPLEMENTS DiagnosisStrategy
+    METHOD diagnose(symptoms):
+        // Dummy probability scores
+        RETURN ["Disease A (70%)", "Disease B (30%)"]
+END CLASS
+
+
+// Tomorrow a new algorithm can be added easily
+CLASS GeneticPatternDiagnosis IMPLEMENTS DiagnosisStrategy
+    METHOD diagnose(symptoms):
+        // Genetic data based prediction
+        RETURN ["Genetic Disorder X", "Genetic Disorder Y"]
+END CLASS
+
+
+CLASS DiagnosisContext
+    ATTRIBUTE:
+        strategy : DiagnosisStrategy
+    
+    CONSTRUCTOR DiagnosisContext(strategy):
+        this.strategy = strategy
+    
+    METHOD setStrategy(strategy):
+        this.strategy = strategy
+    
+    METHOD executeDiagnosis(symptoms):
+        RETURN strategy.diagnose(symptoms)
+END CLASS
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    PRINT "--- Healthcare Diagnosis Engine (Apollo International Hospital) ---"
+    
+    patient1Symptoms = ["fever", "cough", "fatigue"]
+    context = NEW DiagnosisContext(NEW RuleBasedDiagnosis())
+    result1 = context.executeDiagnosis(patient1Symptoms)
+    PRINT "General Medicine Diagnosis: " + result1
+    
+    patient2Symptoms = ["headache", "dizziness", "nausea"]
+    context.setStrategy(NEW AIBasedDiagnosis())
+    result2 = context.executeDiagnosis(patient2Symptoms)
+    PRINT "Neurology Diagnosis: " + result2
+    
+    // Tomorrow: new algorithm added without touching old code
+    patient3Symptoms = ["gene mutation marker"]
+    context.setStrategy(NEW GeneticPatternDiagnosis())
+    result3 = context.executeDiagnosis(patient3Symptoms)
+    PRINT "Genetic Diagnosis: " + result3
+END FUNCTION

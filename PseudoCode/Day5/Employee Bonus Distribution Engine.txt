@@ -1,0 +1,78 @@
+CLASS Employee
+    ATTRIBUTES:
+        name : String
+        department : String
+        rating : Integer   // performance rating (1–5)
+        baseSalary : Double
+    
+    CONSTRUCTOR Employee(name, department, rating, baseSalary):
+        this.name = name
+        this.department = department
+        this.rating = rating
+        this.baseSalary = baseSalary
+    
+    METHODS:
+        getName()
+        getDepartment()
+        getRating()
+        getBaseSalary()
+END CLASS
+
+
+// ---------------- BONUS ENGINE ----------------
+CLASS BonusDistributionEngine
+    
+    METHOD distributeBonuses(employees: List<Employee>):
+        
+        // Step 1: Group employees by department
+        departmentGroups = employees.stream()
+            .collect(groupingBy(Employee::getDepartment))
+        
+        // Step 2: For each department
+        FOR EACH (dept, empList) IN departmentGroups:
+            PRINT "Department: " + dept
+            
+            // 2a: Calculate total salary in department
+            totalSalary = empList.stream()
+                .mapToDouble(Employee::getBaseSalary)
+                .sum()
+            
+            // 2b: Bonus pool = 10% of totalSalary
+            pool = totalSalary * 0.10
+            
+            // 2c: Calculate total rating sum
+            totalRating = empList.stream()
+                .mapToInt(Employee::getRating)
+                .sum()
+            
+            // 2d: Distribute pool proportionally
+            FOR EACH emp IN empList:
+                share = (emp.getRating() / totalRating) * pool
+                PRINT "   " + emp.getName() + " → Bonus = ₹" + share
+END CLASS
+
+
+// ---------------- MAIN PROGRAM ----------------
+FUNCTION Main():
+    employees = NEW ArrayList<Employee>()
+    
+    // Sample input
+    employees.add(NEW Employee("Alice", "IT", 5, 50000))
+    employees.add(NEW Employee("Bob", "IT", 3, 40000))
+    employees.add(NEW Employee("Charlie", "IT", 2, 30000))
+    employees.add(NEW Employee("David", "Finance", 4, 60000))
+    employees.add(NEW Employee("Eva", "Finance", 1, 40000))
+    
+    engine = NEW BonusDistributionEngine()
+    engine.distributeBonuses(employees)
+    
+// Expected Output:
+// Department: IT
+//    Alice → Bonus = ₹50,000
+//    Bob → Bonus = ₹30,000
+//    Charlie → Bonus = ₹20,000
+//
+// Department: Finance
+//    David → Bonus = ₹48,000
+//    Eva   → Bonus = ₹12,000
+END FUNCTION

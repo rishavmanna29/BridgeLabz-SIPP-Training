@@ -1,0 +1,157 @@
+INTERFACE TaxCalculator
+    METHOD calculateTax(basePrice) RETURNS Double
+END INTERFACE
+
+
+CLASS FoodTax IMPLEMENTS TaxCalculator
+    METHOD calculateTax(basePrice):
+        RETURN basePrice * 0.05
+END CLASS
+
+
+CLASS BeverageTax IMPLEMENTS TaxCalculator
+    METHOD calculateTax(basePrice):
+        RETURN basePrice * 0.12
+END CLASS
+
+
+CLASS ImportedTax IMPLEMENTS TaxCalculator
+    METHOD calculateTax(basePrice):
+        gst = basePrice * 0.05
+        customsDuty = basePrice * 0.10
+        RETURN gst + customsDuty
+END CLASS
+
+
+// Future extension: LuxuryTax
+CLASS LuxuryTax IMPLEMENTS TaxCalculator
+    METHOD calculateTax(basePrice):
+        RETURN basePrice * 0.18
+END CLASS
+
+
+// ---------------- DISCOUNT POLICIES ----------------
+INTERFACE DiscountPolicy
+    METHOD applyDiscount(totalAmount) RETURNS Double
+END INTERFACE
+
+
+CLASS NoDiscount IMPLEMENTS DiscountPolicy
+    METHOD applyDiscount(totalAmount):
+        RETURN totalAmount
+END CLASS
+
+
+CLASS FlatDiscount IMPLEMENTS DiscountPolicy
+    ATTRIBUTE: flatAmount
+    
+    CONSTRUCTOR FlatDiscount(flatAmount):
+        this.flatAmount = flatAmount
+    
+    METHOD applyDiscount(totalAmount):
+        RETURN totalAmount - flatAmount
+END CLASS
+
+
+CLASS PercentageDiscount IMPLEMENTS DiscountPolicy
+    ATTRIBUTE: percent
+    
+    CONSTRUCTOR PercentageDiscount(percent):
+        this.percent = percent
+    
+    METHOD applyDiscount(totalAmount):
+        RETURN totalAmount - (totalAmount * percent / 100)
+END CLASS
+
+
+// New: Buy1Get1 scheme
+CLASS Buy1Get1Discount IMPLEMENTS DiscountPolicy
+    METHOD applyDiscount(totalAmount):
+        // assume every 2nd item is free (approx logic)
+        RETURN totalAmount / 2
+END CLASS
+
+
+// ---------------- MENU ITEM ----------------
+CLASS MenuItem
+    ATTRIBUTES:
+        name
+        basePrice
+        taxCalculator   // strategy
+    
+    CONSTRUCTOR MenuItem(name, basePrice, taxCalculator):
+        this.name = name
+        this.basePrice = basePrice
+        this.taxCalculator = taxCalculator
+    
+    METHOD getFinalPrice():
+        tax = taxCalculator.calculateTax(basePrice)
+        RETURN basePrice + tax
+END CLASS
+
+
+// ---------------- BILLING SYSTEM ----------------
+CLASS Bill
+    ATTRIBUTES:
+        items : List<MenuItem>
+        discountPolicy : DiscountPolicy
+    
+    CONSTRUCTOR Bill(discountPolicy):
+        this.items = empty list
+        this.discountPolicy = discountPolicy
+    
+    METHOD addItem(item):
+        ADD item TO items
+    
+    METHOD calculateTotal():
+        subtotal = 0
+        FOR each item IN items:
+            subtotal = subtotal + item.getFinalPrice()
+        
+        finalAmount = discountPolicy.applyDiscount(subtotal)
+        RETURN finalAmount
+    
+    METHOD printBill():
+        PRINT "--- Spice Villa Bill ---"
+        FOR each item IN items:
+            PRINT item.name + " => " + item.getFinalPrice()
+        
+        subtotal = SUM(item.getFinalPrice() FOR item IN items)
+        PRINT "Subtotal: " + subtotal
+        PRINT "After Discount: " + discountPolicy.applyDiscount(subtotal)
+        PRINT "------------------------"
+END CLASS
+
+
+// ---------------- MAIN PROGRAM ----------------
+FUNCTION Main():
+    // Scenario 1
+    paneer = NEW MenuItem("Paneer Tikka", 300, NEW FoodTax())
+    coke   = NEW MenuItem("Coke", 100, NEW BeverageTax())
+    cheese = NEW MenuItem("Imported Cheese", 500, NEW ImportedTax())
+    
+    bill1 = NEW Bill(NEW PercentageDiscount(10))  // 10% off
+    bill1.addItem(paneer)
+    bill1.addItem(coke)
+    bill1.addItem(cheese)
+    
+    bill1.printBill()
+    
+    // Scenario 2 (New scheme: Buy 1 Get 1)
+    pizza = NEW MenuItem("Pizza", 400, NEW FoodTax())
+    juice = NEW MenuItem("Juice", 150, NEW BeverageTax())
+    
+    bill2 = NEW Bill(NEW Buy1Get1Discount())
+    bill2.addItem(pizza)
+    bill2.addItem(juice)
+    
+    bill2.printBill()
+    
+    // Scenario 3 (Festival Luxury Tax)
+    luxuryWine = NEW MenuItem("Luxury Wine", 2000, NEW LuxuryTax())
+    
+    bill3 = NEW Bill(NEW NoDiscount())
+    bill3.addItem(luxuryWine)
+    
+    bill3.printBill()
+END FUNCTION

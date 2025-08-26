@@ -1,0 +1,62 @@
+CLASS Reading
+    ATTRIBUTE:
+        value : Integer   // energy consumption in kW
+    CONSTRUCTOR Reading(value):
+        this.value = value
+    METHOD getValue():
+        RETURN value
+END CLASS
+
+
+// ---------------- SMART GRID TRACKER ----------------
+CLASS SmartGridTracker
+    ATTRIBUTE:
+        data : Map<String, Map<String, List<Reading>>>
+        // Structure: Zone → Day → List of Readings
+    
+    CONSTRUCTOR SmartGridTracker():
+        data = new HashMap()
+    
+    METHOD addReading(zone, day, reading):
+        IF zone NOT IN data:
+            data[zone] = new HashMap()
+        IF day NOT IN data[zone]:
+            data[zone][day] = new ArrayList()
+        data[zone][day].add(reading)
+    
+    METHOD getPeakLoads():
+        // Traverse nested map and find peak per day per zone
+        FOR EACH zone IN data.keySet():
+            PRINT "Zone: " + zone
+            FOR EACH day IN data[zone].keySet():
+                readings = data[zone][day]
+                peak = readings.stream()
+                               .map(r -> r.getValue())
+                               .max()
+                PRINT "   Day: " + day + " → Peak Load = " + peak + " kW"
+END CLASS
+
+
+// ---------------- MAIN PROGRAM ----------------
+FUNCTION Main():
+    tracker = NEW SmartGridTracker()
+    
+    // Add sample data
+    tracker.addReading("Zone-A", "2025-08-01", NEW Reading(120))
+    tracker.addReading("Zone-A", "2025-08-01", NEW Reading(90))
+    tracker.addReading("Zone-A", "2025-08-01", NEW Reading(200))
+    tracker.addReading("Zone-A", "2025-08-01", NEW Reading(150))
+    
+    tracker.addReading("Zone-B", "2025-08-01", NEW Reading(300))
+    tracker.addReading("Zone-B", "2025-08-01", NEW Reading(350))
+    tracker.addReading("Zone-B", "2025-08-01", NEW Reading(250))
+    
+    // Generate peak load report
+    tracker.getPeakLoads()
+    
+// Expected Output:
+// Zone-A
+//    Day: 2025-08-01 → Peak Load = 200 kW
+// Zone-B
+//    Day: 2025-08-01 → Peak Load = 350 kW
+END FUNCTION

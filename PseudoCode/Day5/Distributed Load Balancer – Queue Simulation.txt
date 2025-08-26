@@ -1,0 +1,76 @@
+CLASS Server
+    ATTRIBUTE:
+        id
+    
+    CONSTRUCTOR Server(id):
+        this.id = id
+    
+    METHOD toString():
+        RETURN "Server-" + id
+END CLASS
+
+
+CLASS LoadBalancer
+    ATTRIBUTE:
+        queue   // queue of active servers
+    
+    CONSTRUCTOR LoadBalancer(servers):
+        queue = new Queue()
+        FOR each s IN servers:
+            ENQUEUE(queue, s)
+    
+    METHOD addServer(server):
+        ENQUEUE(queue, server)
+        PRINT server + " added to the system."
+    
+    METHOD removeServer(server):
+        tempQueue = new Queue()
+        WHILE queue NOT EMPTY:
+            s = DEQUEUE(queue)
+            IF s != server:
+                ENQUEUE(tempQueue, s)
+        queue = tempQueue
+        PRINT server + " removed from the system."
+    
+    METHOD assignRequest(requestID):
+        IF queue is EMPTY:
+            PRINT "No active servers! Request " + requestID + " failed."
+            RETURN
+        server = DEQUEUE(queue)     // take server from front
+        PRINT "Request " + requestID + " → " + server
+        ENQUEUE(queue, server)      // put server back at end
+END CLASS
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    PRINT "--- StreamHub Load Balancer Simulation ---"
+    
+    // Step 1: Initialize servers
+    s1 = NEW Server("S1")
+    s2 = NEW Server("S2")
+    s3 = NEW Server("S3")
+    
+    balancer = NEW LoadBalancer([s1, s2, s3])
+    
+    // Step 2: Process first 3 requests
+    balancer.assignRequest("R1")   // S1
+    balancer.assignRequest("R2")   // S2
+    balancer.assignRequest("R3")   // S3
+    
+    // Step 3: Add a new server dynamically
+    s4 = NEW Server("S4")
+    balancer.addServer(s4)
+    
+    // Step 4: Continue requests
+    balancer.assignRequest("R4")   // S1
+    balancer.assignRequest("R5")   // S2
+    
+    // Step 5: Remove server S2 (fails)
+    balancer.removeServer(s2)
+    
+    // Step 6: Continue more requests
+    balancer.assignRequest("R6")   // S3
+    balancer.assignRequest("R7")   // S4
+    balancer.assignRequest("R8")   // S1
+END FUNCTION

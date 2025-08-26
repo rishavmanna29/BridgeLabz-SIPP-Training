@@ -1,0 +1,87 @@
+CLASS TrieNode
+    ATTRIBUTES:
+        children : Map<Char, TrieNode>
+        isEndOfWord : Boolean
+        keyword : String   // stores full word at leaf
+        popularity : Integer   // stores ranking score (e.g. orders count)
+    
+    CONSTRUCTOR TrieNode():
+        children = empty map
+        isEndOfWord = false
+        keyword = null
+        popularity = 0
+END CLASS
+
+
+CLASS Trie
+    ATTRIBUTE:
+        root : TrieNode
+    
+    CONSTRUCTOR Trie():
+        root = NEW TrieNode()
+    
+    METHOD insert(word, popularity):
+        node = root
+        FOR each char c IN word:
+            IF c NOT IN node.children:
+                node.children[c] = NEW TrieNode()
+            node = node.children[c]
+        node.isEndOfWord = true
+        node.keyword = word
+        node.popularity = node.popularity + popularity   // increment score
+    
+    METHOD searchPrefix(prefix):
+        node = root
+        FOR each char c IN prefix:
+            IF c NOT IN node.children:
+                RETURN []   // no matches
+            node = node.children[c]
+        RETURN collectAllWords(node)
+    
+    METHOD collectAllWords(node):
+        results = []
+        IF node.isEndOfWord:
+            ADD (node.keyword, node.popularity) TO results
+        FOR each childNode IN node.children:
+            results = results + collectAllWords(childNode)
+        RETURN results
+    
+    METHOD getSuggestions(prefix, N):
+        allMatches = searchPrefix(prefix)   // [(word, popularity)]
+        SORT allMatches BY popularity DESC
+        RETURN first N entries
+END CLASS
+
+
+// ---------------- MAIN PROGRAM ----------------
+FUNCTION Main():
+    trie = NEW Trie()
+    
+    // Step 1: Insert keywords
+    trie.insert("pizza hut", 50)
+    trie.insert("pizza point", 30)
+    trie.insert("pita bread", 70)
+    trie.insert("pizzeria", 20)
+    
+    // Step 2: User types "pi"
+    PRINT "Suggestions for 'pi':"
+    suggestions = trie.getSuggestions("pi", 3)
+    FOR each s IN suggestions:
+        PRINT s.keyword + " (popularity=" + s.popularity + ")"
+    
+    // Step 3: Popularity updates dynamically
+    trie.insert("pita bread", 20)   // more orders → increases popularity
+    
+    PRINT "Suggestions after new orders for 'pita bread':"
+    suggestions2 = trie.getSuggestions("pi", 3)
+    FOR each s IN suggestions2:
+        PRINT s.keyword + " (popularity=" + s.popularity + ")"
+    
+    // Step 4: New restaurant added
+    trie.insert("pineapple cafe", 40)
+    
+    PRINT "Suggestions after adding 'pineapple cafe':"
+    suggestions3 = trie.getSuggestions("pi", 3)
+    FOR each s IN suggestions3:
+        PRINT s.keyword + " (popularity=" + s.popularity + ")"
+END FUNCTION
