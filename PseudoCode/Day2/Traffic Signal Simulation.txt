@@ -1,0 +1,45 @@
+ENUM TrafficLight
+    RED
+    YELLOW
+    GREEN
+END ENUM
+
+
+CLASS TrafficSignal
+    ATTRIBUTE:
+        currentLight
+        redDuration      // time for RED
+        yellowDuration   // time for YELLOW
+        greenDuration    // time for GREEN
+    
+    CONSTRUCTOR TrafficSignal(redDuration, yellowDuration, greenDuration):
+        this.currentLight = RED
+        this.redDuration = redDuration
+        this.yellowDuration = yellowDuration
+        this.greenDuration = greenDuration
+    
+    METHOD switchLight():
+        IF currentLight == RED THEN
+            WAIT redDuration
+            currentLight = GREEN
+        ELSE IF currentLight == GREEN THEN
+            WAIT greenDuration
+            currentLight = YELLOW
+        ELSE IF currentLight == YELLOW THEN
+            WAIT yellowDuration
+            currentLight = RED
+    
+    METHOD startSimulation(cycles):
+        REPEAT cycles TIMES:
+            PRINT "Current Light: " + currentLight
+            CALL switchLight()
+END CLASS
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    signal = NEW TrafficSignal(10, 3, 7)  // RED=10s, YELLOW=3s, GREEN=7s
+    
+    PRINT "Starting Traffic Signal Simulation..."
+    CALL signal.startSimulation(5)  // Run 5 cycles
+END FUNCTION

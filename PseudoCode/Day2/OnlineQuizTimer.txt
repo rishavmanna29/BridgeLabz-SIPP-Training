@@ -1,0 +1,28 @@
+ALGORITHM OnlineQuizTimer
+START
+    CLASS QuizTimer
+        ATTRIBUTE: timeSlots[]       // circular array
+        ATTRIBUTE: currentIndex
+        ATTRIBUTE: totalQuestions
+
+        CONSTRUCTOR(size)
+            INITIALIZE timeSlots with size
+            SET totalQuestions = size
+            SET currentIndex = 0
+        END CONSTRUCTOR
+
+        METHOD setTimeForQuestion(index, time)
+            timeSlots[index] = time
+        END METHOD
+
+        METHOD nextQuestion()
+            currentIndex = (currentIndex + 1) MOD totalQuestions
+        END METHOD
+
+        METHOD triggerWarning()
+            IF timeSlots[currentIndex] <= 5 THEN
+                PRINT "Warning: Time almost up for current question"
+            END IF
+        END METHOD
+    END CLASS
+END
