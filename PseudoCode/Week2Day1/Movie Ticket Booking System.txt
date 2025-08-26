@@ -1,0 +1,100 @@
+CLASS Ticket
+    PRIVATE ATTRIBUTES:
+        movieName : String
+        seatNumber : String
+        price : Double
+        status : String   // "Booked" or "Cancelled"
+    
+    CONSTRUCTOR Ticket(movieName, seatNumber, price):
+        this.movieName = movieName
+        this.seatNumber = seatNumber
+        this.price = price
+        this.status = "Booked"
+    
+    METHOD cancel():
+        this.status = "Cancelled"
+    
+    METHOD getDetails():
+        RETURN "Movie: " + movieName + ", Seat: " + seatNumber + 
+               ", Price: " + price + ", Status: " + status
+END CLASS
+
+
+CLASS Theatre
+    PRIVATE ATTRIBUTES:
+        name : String
+        movies : Map<String, List<String>>   // movieName -> list of availableSeats
+        issuedTickets : List<Ticket>
+    
+    CONSTRUCTOR Theatre(name):
+        this.name = name
+        this.movies = new Map()
+        this.issuedTickets = new List()
+    
+    METHOD addMovie(movieName, seatsList):
+        movies.put(movieName, seatsList)
+    
+    METHOD bookTicket(movieName, seatNumber, price):
+        IF movies.containsKey(movieName) AND seatNumber IN movies[movieName]:
+            REMOVE seatNumber FROM movies[movieName]
+            ticket = NEW Ticket(movieName, seatNumber, price)
+            issuedTickets.add(ticket)
+            RETURN ticket
+        ELSE:
+            PRINT "Seat not available or movie not found."
+            RETURN null
+    
+    METHOD cancelTicket(ticket):
+        IF ticket != null AND ticket.status == "Booked":
+            ticket.cancel()
+            movies[ticket.movieName].add(ticket.seatNumber)   // free seat
+            PRINT "Ticket cancelled successfully. Seat " + ticket.seatNumber + " is free now."
+        ELSE:
+            PRINT "Invalid or already cancelled ticket."
+END CLASS
+
+
+CLASS Customer
+    PRIVATE ATTRIBUTES:
+        name : String
+        bookedTickets : List<Ticket>
+    
+    CONSTRUCTOR Customer(name):
+        this.name = name
+        this.bookedTickets = new List()
+    
+    METHOD browseMovies(theatre):
+        PRINT "Movies running at " + theatre.name + ": " + theatre.movies.keys()
+    
+    METHOD bookTicket(theatre, movieName, seatNumber, price):
+        ticket = theatre.bookTicket(movieName, seatNumber, price)
+        IF ticket != null:
+            bookedTickets.add(ticket)
+            PRINT name + " booked ticket: " + ticket.getDetails()
+    
+    METHOD cancelTicket(theatre, ticket):
+        theatre.cancelTicket(ticket)
+        bookedTickets.remove(ticket)
+END CLASS
+
+
+// ----------------- MAIN FLOW -----------------
+FUNCTION Main():
+    theatre = NEW Theatre("PVR Cinemas")
+    theatre.addMovie("Avengers: Endgame (6PM)", ["A10", "A11", "A12"])
+    
+    customer1 = NEW Customer("Ravi")
+    
+    customer1.browseMovies(theatre)
+    
+    // Ravi books a ticket
+    ticket1 = theatre.bookTicket("Avengers: Endgame (6PM)", "A12", 300.0)
+    customer1.bookedTickets.add(ticket1)
+    
+    PRINT "Ticket issued: " + ticket1.getDetails()
+    
+    // Ravi cancels ticket
+    customer1.cancelTicket(theatre, ticket1)
+    
+    PRINT "Final seat availability: " + theatre.movies["Avengers: Endgame (6PM)"]
+END FUNCTION

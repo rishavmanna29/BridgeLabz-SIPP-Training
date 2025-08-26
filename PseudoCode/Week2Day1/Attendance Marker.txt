@@ -1,0 +1,52 @@
+CLASS AttendanceTracker
+    ATTRIBUTE students : Integer   // number of students
+    ATTRIBUTE days : Integer       // number of days in month
+    ATTRIBUTE attendance : 2D Array of Char [students][days]
+
+    CONSTRUCTOR AttendanceTracker(students, days):
+        this.students = students
+        this.days = days
+        CREATE attendance[students][days]
+        // Initialize with 'A' (absent) by default
+        FOR i = 0 TO students-1:
+            FOR j = 0 TO days-1:
+                attendance[i][j] = 'A'
+
+    METHOD markAttendance(studentId, day, status):
+        // studentId and day are 1-based (e.g., Student 1, Day 3)
+        attendance[studentId-1][day-1] = status
+        PRINT "Attendance updated: Student " + studentId + " Day " + day + " = " + status
+
+    METHOD updateAttendance(studentId, day, status):
+        attendance[studentId-1][day-1] = status
+        PRINT "Correction made: Student " + studentId + " Day " + day + " = " + status
+
+    METHOD generateReport():
+        FOR i = 0 TO students-1:
+            presentCount = 0
+            FOR j = 0 TO days-1:
+                IF attendance[i][j] == 'P':
+                    presentCount = presentCount + 1
+            PRINT "Student " + (i+1) + " was present " + presentCount + " days out of " + days
+END CLASS
+
+
+// ---------------- MAIN FLOW ----------------
+FUNCTION Main():
+    tracker = NEW AttendanceTracker(3, 7)   // 3 students, 7 days (example week)
+
+    // Mark attendance
+    tracker.markAttendance(1, 1, 'P')
+    tracker.markAttendance(1, 2, 'P')
+    tracker.markAttendance(1, 3, 'A')
+    tracker.markAttendance(1, 4, 'P')
+    tracker.markAttendance(1, 5, 'P')
+    tracker.markAttendance(1, 6, 'P')
+    tracker.markAttendance(1, 7, 'A')
+
+    // Correction for day 3
+    tracker.updateAttendance(1, 3, 'P')
+
+    // Generate report
+    tracker.generateReport()
+END FUNCTION

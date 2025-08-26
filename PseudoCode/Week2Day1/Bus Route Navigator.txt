@@ -1,0 +1,105 @@
+CLASS BusStop
+    ATTRIBUTE name : String
+    ATTRIBUTE next : BusStop (pointer to next stop)
+    
+    CONSTRUCTOR BusStop(name):
+        this.name = name
+        this.next = null
+END CLASS
+
+
+CLASS BusRoute
+    ATTRIBUTE head : BusStop
+    
+    CONSTRUCTOR BusRoute():
+        this.head = null
+    
+    METHOD addStop(stopName):
+        newStop = NEW BusStop(stopName)
+        IF head == null:
+            head = newStop
+        ELSE:
+            current = head
+            WHILE current.next != null:
+                current = current.next
+            current.next = newStop
+        PRINT stopName + " added to the end of the route."
+    
+    METHOD insertAfter(targetStopName, newStopName):
+        current = head
+        WHILE current != null:
+            IF current.name == targetStopName:
+                newStop = NEW BusStop(newStopName)
+                newStop.next = current.next
+                current.next = newStop
+                PRINT newStopName + " inserted after " + targetStopName
+                RETURN
+            current = current.next
+        PRINT "Stop " + targetStopName + " not found in route."
+    
+    METHOD removeStop(stopName):
+        IF head == null:
+            PRINT "Route is empty."
+            RETURN
+        
+        // If the head itself is to be removed
+        IF head.name == stopName:
+            head = head.next
+            PRINT stopName + " removed from route."
+            RETURN
+        
+        current = head
+        WHILE current.next != null:
+            IF current.next.name == stopName:
+                current.next = current.next.next
+                PRINT stopName + " removed from route."
+                RETURN
+            current = current.next
+        PRINT stopName + " not found in route."
+    
+    METHOD searchStop(stopName):
+        current = head
+        WHILE current != null:
+            IF current.name == stopName:
+                PRINT "Stop " + stopName + " is present in the route."
+                RETURN TRUE
+            current = current.next
+        PRINT "Stop " + stopName + " not found in route."
+        RETURN FALSE
+    
+    METHOD displayRoute():
+        current = head
+        route = ""
+        WHILE current != null:
+            route = route + current.name
+            IF current.next != null:
+                route = route + " → "
+            current = current.next
+        PRINT "Current Route: " + route
+END CLASS
+
+
+// ----------------- MAIN FLOW -----------------
+FUNCTION Main():
+    route = NEW BusRoute()
+    
+    // Initial route
+    route.addStop("Depot")
+    route.addStop("Main Street")
+    route.addStop("City Mall")
+    route.addStop("Hospital")
+    route.addStop("Airport")
+    
+    route.displayRoute()
+    
+    // Insert University Stop after City Mall
+    route.insertAfter("City Mall", "University")
+    route.displayRoute()
+    
+    // Remove Hospital stop
+    route.removeStop("Hospital")
+    route.displayRoute()
+    
+    // Search for Airport
+    route.searchStop("Airport")
+END FUNCTION

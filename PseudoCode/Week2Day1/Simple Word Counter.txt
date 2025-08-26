@@ -1,0 +1,42 @@
+CLASS WordCounter
+
+    METHOD countWords(text: String)
+        // Step 1: Normalize
+        CONVERT text TO lowercase
+        REMOVE punctuation (replace with space)
+
+        // Step 2: Split into words
+        words = SPLIT text BY spaces
+
+        // Step 3: Count using Map
+        DECLARE wordCount AS Map<String, Integer>
+
+        FOR EACH word IN words
+            IF word IS NOT empty THEN
+                IF wordCount contains word THEN
+                    INCREMENT wordCount[word] BY 1
+                ELSE
+                    SET wordCount[word] = 1
+                ENDIF
+            ENDIF
+        END FOR
+
+        // Step 4: Sort by frequency (descending)
+        sortedList = SORT wordCount entries BY value (highest first)
+
+        // Step 5: Display results
+        FOR EACH entry IN sortedList
+            PRINT entry.key + " → " + entry.value
+        END FOR
+    END METHOD
+
+END CLASS
+
+
+// ---------- MAIN PROGRAM ----------
+BEGIN
+    INPUT paragraph = "The news today is about the rise in technology trends."
+
+    CREATE counter AS WordCounter
+    CALL counter.countWords(paragraph)
+END

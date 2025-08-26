@@ -1,0 +1,43 @@
+CLASS DailyTasksOrganizer
+    DECLARE tasks AS LinkedHashMap<Integer, String>
+    DECLARE taskIdCounter AS Integer
+
+    METHOD constructor()
+        INITIALIZE tasks as empty LinkedHashMap
+        SET taskIdCounter = 1
+
+    METHOD addTask(description: String)
+        INSERT (taskIdCounter, description) INTO tasks
+        PRINT "Task Added: " + taskIdCounter + " → " + description
+        INCREMENT taskIdCounter
+
+    METHOD removeTask(taskId: Integer)
+        IF tasks contains taskId THEN
+            PRINT "Task Removed: " + taskId + " → " + tasks[taskId]
+            REMOVE taskId FROM tasks
+        ELSE
+            PRINT "Task ID not found"
+
+    METHOD viewTasks()
+        PRINT "Pending Tasks:"
+        FOR EACH (id, description) IN tasks (in insertion order)
+            PRINT id + " → " + description
+END CLASS
+
+
+// ----------- MAIN PROGRAM -----------
+BEGIN
+    CREATE organizer AS DailyTasksOrganizer
+
+    // Morning tasks
+    CALL organizer.addTask("Check emails")
+    CALL organizer.addTask("Prepare sales report")
+    CALL organizer.addTask("Call client")
+
+    CALL organizer.viewTasks()
+
+    // Remove completed task
+    CALL organizer.removeTask(2)
+
+    CALL organizer.viewTasks()
+END
