@@ -1,0 +1,76 @@
+CLASS Account
+    ATTRIBUTES:
+        accountNumber
+        holderName
+        balance
+    
+    CONSTRUCTOR Account(accountNumber, holderName, balance):
+        this.accountNumber = accountNumber
+        this.holderName = holderName
+        this.balance = balance
+    
+    METHOD deposit(amount):
+        balance = balance + amount
+        PRINT "Deposited: " + amount + ", New Balance: " + balance
+    
+    METHOD withdraw(amount):   // to be overridden
+        PRINT "Base withdrawal - rules not defined."
+    
+    METHOD displayInfo():
+        PRINT "Account Number: " + accountNumber
+        PRINT "Holder: " + holderName
+        PRINT "Balance: " + balance
+END CLASS
+
+
+CLASS Saving EXTENDS Account
+    ATTRIBUTE:
+        withdrawalLimit   // daily withdrawal limit
+    
+    CONSTRUCTOR Saving(accountNumber, holderName, balance, withdrawalLimit):
+        CALL Account(accountNumber, holderName, balance)
+        this.withdrawalLimit = withdrawalLimit
+    
+    METHOD withdraw(amount):
+        IF amount > withdrawalLimit THEN
+            PRINT "Withdrawal denied! Exceeds daily limit of " + withdrawalLimit
+        ELSE IF amount > balance THEN
+            PRINT "Withdrawal denied! Insufficient balance."
+        ELSE
+            balance = balance - amount
+            PRINT "Withdrawn: " + amount + ", Remaining Balance: " + balance
+END CLASS
+
+
+CLASS Current EXTENDS Account
+    ATTRIBUTE:
+        overdraftLimit
+    
+    CONSTRUCTOR Current(accountNumber, holderName, balance, overdraftLimit):
+        CALL Account(accountNumber, holderName, balance)
+        this.overdraftLimit = overdraftLimit
+    
+    METHOD withdraw(amount):
+        IF amount > (balance + overdraftLimit) THEN
+            PRINT "Withdrawal denied! Overdraft limit exceeded."
+        ELSE
+            balance = balance - amount
+            PRINT "Withdrawn: " + amount + ", Remaining Balance: " + balance
+END CLASS
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    acc1 = NEW Saving("S101", "Ravi", 5000, 2000)
+    acc2 = NEW Current("C201", "Asha", 10000, 5000)
+    
+    PRINT "---- Banking Portal ----"
+    acc1.displayInfo()
+    acc2.displayInfo()
+    
+    PRINT "\n--- Transactions ---"
+    CALL acc1.withdraw(2500)   // exceeds limit
+    CALL acc1.withdraw(1500)   // valid withdrawal
+    CALL acc2.withdraw(12000)  // within overdraft
+    CALL acc2.withdraw(20000)  // exceeds overdraft
+END FUNCTION

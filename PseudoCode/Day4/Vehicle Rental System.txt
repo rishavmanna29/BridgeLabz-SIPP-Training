@@ -1,0 +1,115 @@
+INTERFACE Rentable
+    METHOD rent(days)
+    METHOD returnVehicle()
+END INTERFACE
+
+
+ABSTRACT CLASS Vehicle IMPLEMENTS Rentable
+    ATTRIBUTES:
+        vehicleID
+        brand
+        rentPerDay
+        isRented
+    
+    CONSTRUCTOR Vehicle(vehicleID, brand, rentPerDay):
+        this.vehicleID = vehicleID
+        this.brand = brand
+        this.rentPerDay = rentPerDay
+        this.isRented = false
+    
+    METHOD displayInfo():
+        PRINT "Vehicle ID: " + vehicleID
+        PRINT "Brand: " + brand
+        PRINT "Rent Per Day: " + rentPerDay
+        PRINT "Rented: " + isRented
+END CLASS
+
+
+CLASS Car EXTENDS Vehicle
+    CONSTRUCTOR Car(vehicleID, brand, rentPerDay):
+        CALL Vehicle(vehicleID, brand, rentPerDay)
+    
+    METHOD rent(days):
+        IF isRented == true THEN
+            PRINT "Car already rented!"
+        ELSE
+            isRented = true
+            cost = days * rentPerDay
+            PRINT "Car rented for " + days + " days. Total cost: " + cost
+    
+    METHOD returnVehicle():
+        isRented = false
+        PRINT "Car returned successfully."
+END CLASS
+
+
+CLASS Bike EXTENDS Vehicle
+    CONSTRUCTOR Bike(vehicleID, brand, rentPerDay):
+        CALL Vehicle(vehicleID, brand, rentPerDay)
+    
+    METHOD rent(days):
+        IF isRented == true THEN
+            PRINT "Bike already rented!"
+        ELSE
+            isRented = true
+            cost = days * rentPerDay
+            PRINT "Bike rented for " + days + " days. Total cost: " + cost
+    
+    METHOD returnVehicle():
+        isRented = false
+        PRINT "Bike returned successfully."
+END CLASS
+
+
+CLASS Truck EXTENDS Vehicle
+    CONSTRUCTOR Truck(vehicleID, brand, rentPerDay):
+        CALL Vehicle(vehicleID, brand, rentPerDay)
+    
+    METHOD rent(days):
+        IF isRented == true THEN
+            PRINT "Truck already rented!"
+        ELSE
+            isRented = true
+            cost = days * rentPerDay
+            PRINT "Truck rented for " + days + " days. Total cost: " + cost
+    
+    METHOD returnVehicle():
+        isRented = false
+        PRINT "Truck returned successfully."
+END CLASS
+
+
+// FACTORY CLASS
+CLASS VehicleFactory
+    STATIC METHOD createVehicle(type, vehicleID, brand, rentPerDay):
+        IF type == "Car" THEN
+            RETURN NEW Car(vehicleID, brand, rentPerDay)
+        ELSE IF type == "Bike" THEN
+            RETURN NEW Bike(vehicleID, brand, rentPerDay)
+        ELSE IF type == "Truck" THEN
+            RETURN NEW Truck(vehicleID, brand, rentPerDay)
+        ELSE
+            PRINT "Invalid Vehicle Type!"
+            RETURN null
+END CLASS
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    car1 = VehicleFactory.createVehicle("Car", "C101", "Toyota", 2000)
+    bike1 = VehicleFactory.createVehicle("Bike", "B201", "Yamaha", 800)
+    truck1 = VehicleFactory.createVehicle("Truck", "T301", "Tata", 5000)
+    
+    PRINT "--- Vehicle Rental System ---"
+    
+    car1.displayInfo()
+    CALL car1.rent(3)
+    CALL car1.returnVehicle()
+    
+    bike1.displayInfo()
+    CALL bike1.rent(2)
+    
+    truck1.displayInfo()
+    CALL truck1.rent(5)
+    CALL truck1.returnVehicle()
+END FUNCTION

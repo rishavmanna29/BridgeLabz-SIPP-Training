@@ -1,0 +1,69 @@
+CLASS Zone
+    ATTRIBUTES:
+        zoneID
+        crimeRate    // crimes reported in past month
+        neighbors    // list of adjacent zones
+    
+    CONSTRUCTOR Zone(zoneID, crimeRate):
+        this.zoneID = zoneID
+        this.crimeRate = crimeRate
+        this.neighbors = []
+    
+    METHOD addNeighbor(zone):
+        ADD zone TO neighbors
+END CLASS
+
+
+CLASS CityGraph
+    ATTRIBUTES:
+        zones   // dictionary of zoneID -> Zone
+    
+    CONSTRUCTOR CityGraph():
+        zones = empty map
+    
+    METHOD addZone(zoneID, crimeRate):
+        zone = NEW Zone(zoneID, crimeRate)
+        zones[zoneID] = zone
+    
+    METHOD addConnection(zone1, zone2):
+        zones[zone1].addNeighbor(zones[zone2])
+        zones[zone2].addNeighbor(zones[zone1])  // undirected graph
+END CLASS
+
+
+// DFS TO FIND HIGH-RISK AREAS
+FUNCTION DFS(zone, visited, riskThreshold):
+    MARK zone as visited
+    IF zone.crimeRate >= riskThreshold THEN
+        PRINT "High Risk Zone Found: " + zone.zoneID + " (CrimeRate=" + zone.crimeRate + ")"
+    
+    FOR each neighbor IN zone.neighbors:
+        IF neighbor NOT IN visited:
+            CALL DFS(neighbor, visited, riskThreshold)
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    city = NEW CityGraph()
+    
+    // Add zones with crime rates
+    city.addZone("A", 12)
+    city.addZone("B", 8)
+    city.addZone("C", 20)
+    city.addZone("D", 5)
+    city.addZone("E", 18)
+    
+    // Add connections (adjacent zones)
+    city.addConnection("A", "B")
+    city.addConnection("A", "C")
+    city.addConnection("B", "D")
+    city.addConnection("C", "E")
+    
+    riskThreshold = 10  // zones with crimeRate >= 10 are high-risk
+    visited = empty set
+    
+    PRINT "--- Crime Prediction Heatmap ---"
+    FOR each zone IN city.zones:
+        IF zone NOT IN visited:
+            CALL DFS(zone, visited, riskThreshold)
+END FUNCTION

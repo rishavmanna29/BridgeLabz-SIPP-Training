@@ -1,0 +1,73 @@
+CLASS Student
+    ATTRIBUTES:
+        studentID
+        name
+    
+    CONSTRUCTOR Student(studentID, name):
+        this.studentID = studentID
+        this.name = name
+    
+    METHOD displayInfo():
+        PRINT "Student ID: " + studentID + ", Name: " + name
+END CLASS
+
+
+CLASS Course
+    ATTRIBUTES:
+        courseCode
+        courseName
+    
+    CONSTRUCTOR Course(courseCode, courseName):
+        this.courseCode = courseCode
+        this.courseName = courseName
+    
+    METHOD displayInfo():
+        PRINT "Course: " + courseCode + " - " + courseName
+END CLASS
+
+
+CLASS CollegeRegistration
+    ATTRIBUTE:
+        registrationMap   // Map<Course, List<Student>>
+    
+    CONSTRUCTOR CollegeRegistration():
+        registrationMap = empty map
+    
+    METHOD registerStudent(course, student):
+        IF course NOT IN registrationMap:
+            registrationMap[course] = empty list
+        ADD student TO registrationMap[course]
+    
+    METHOD displayRegistrations():
+        FOR each course IN registrationMap:
+            course.displayInfo()
+            PRINT "Registered Students:"
+            FOR each student IN registrationMap[course]:
+                student.displayInfo()
+            PRINT "------------------"
+END CLASS
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    // Create students
+    s1 = NEW Student("S101", "Ravi")
+    s2 = NEW Student("S102", "Asha")
+    s3 = NEW Student("S103", "Neha")
+    
+    // Create courses
+    c1 = NEW Course("CSE101", "Data Structures")
+    c2 = NEW Course("CSE102", "OOP in Java")
+    
+    // Registration System
+    reg = NEW CollegeRegistration()
+    
+    reg.registerStudent(c1, s1)
+    reg.registerStudent(c1, s2)
+    reg.registerStudent(c2, s3)
+    reg.registerStudent(c2, s1)   // same student can register in multiple courses
+    
+    PRINT "--- Course Registrations ---"
+    reg.displayRegistrations()
+END FUNCTION
+

@@ -1,0 +1,58 @@
+CLASS Transaction
+    ATTRIBUTES:
+        transactionID
+        merchant
+        amount
+        date   // format: YYYY-MM-DD
+    
+    CONSTRUCTOR Transaction(transactionID, merchant, amount, date):
+        this.transactionID = transactionID
+        this.merchant = merchant
+        this.amount = amount
+        this.date = date
+    
+    METHOD getMonth():
+        RETURN extractMonth(date)   // e.g. "2025-08-19" → "August 2025"
+END CLASS
+
+
+CLASS WalletReport
+    ATTRIBUTE:
+        transactions   // list of Transaction
+    
+    CONSTRUCTOR WalletReport(transactions):
+        this.transactions = transactions
+    
+    METHOD generateSummary():
+        // Group by Merchant → Month
+        groupedData = transactions
+            .STREAM()
+            .GROUP_BY(merchant, month)
+            .COLLECT( list of transactions )
+        
+        // Summarize
+        FOR each merchant IN groupedData:
+            PRINT "Merchant: " + merchant
+            FOR each month IN groupedData[merchant]:
+                totalAmount = SUM(transaction.amount FOR transaction IN groupedData[merchant][month])
+                count = COUNT(groupedData[merchant][month])
+                PRINT "   Month: " + month + 
+                      ", Transactions: " + count + 
+                      ", Total Spent: " + totalAmount
+END CLASS
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    transactions = []
+    ADD NEW Transaction("T001", "Amazon", 1200, "2025-08-10") TO transactions
+    ADD NEW Transaction("T002", "Flipkart", 800, "2025-08-15") TO transactions
+    ADD NEW Transaction("T003", "Amazon", 2000, "2025-07-25") TO transactions
+    ADD NEW Transaction("T004", "Zomato", 500, "2025-08-18") TO transactions
+    ADD NEW Transaction("T005", "Amazon", 700, "2025-08-19") TO transactions
+    
+    report = NEW WalletReport(transactions)
+    
+    PRINT "--- Digital Wallet Transactions Summary ---"
+    report.generateSummary()
+END FUNCTION
