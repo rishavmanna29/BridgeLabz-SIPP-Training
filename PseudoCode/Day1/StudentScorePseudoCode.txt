@@ -1,0 +1,13 @@
+ALGORITHM StudentScoreStorage
+START
+    CREATE HashMap scores WITH <String, Integer>
+
+    FUNCTION addStudentScore(name, marks)
+        PUT (name, marks) INTO scores
+    END FUNCTION
+
+    FUNCTION displayHighestScorer()
+        highestEntry ← FIND entry IN scores WITH maximum value USING stream
+        PRINT "Highest Scorer: " + highestEntry.key + ", Marks: " + highestEntry.value
+    END FUNCTION
+END

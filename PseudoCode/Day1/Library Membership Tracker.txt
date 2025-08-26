@@ -1,0 +1,49 @@
+CLASS Member
+    ATTRIBUTES:
+        name
+        memberID
+        membershipDate
+        membershipDuration  // in months or years
+    
+    CONSTRUCTOR Member(name, memberID, membershipDate, membershipDuration):
+        this.name = name
+        this.memberID = memberID
+        this.membershipDate = membershipDate
+        this.membershipDuration = membershipDuration
+    
+    METHOD displayInfo():
+        PRINT "Name: " + name
+        PRINT "Member ID: " + memberID
+        PRINT "Membership Date: " + membershipDate
+        PRINT "Duration: " + membershipDuration
+    
+    METHOD isMembershipValid(currentDate):
+        expiryDate = membershipDate + membershipDuration
+        IF currentDate <= expiryDate THEN
+            RETURN true
+        ELSE
+            RETURN false
+END CLASS
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    member1 = NEW Member("Ravi", "M001", "2024-08-01", 12 months)
+    member2 = NEW Member("Asha", "M002", "2023-05-15", 24 months)
+
+    PRINT "Member Information:"
+    CALL member1.displayInfo()
+    CALL member2.displayInfo()
+
+    currentDate = "2025-08-19"
+
+    IF member1.isMembershipValid(currentDate) THEN
+        PRINT member1.name + "'s membership is VALID."
+    ELSE
+        PRINT member1.name + "'s membership has EXPIRED."
+    
+    IF member2.isMembershipValid(currentDate) THEN
+        PRINT member2.name + "'s membership is VALID."
+    ELSE
+        PRINT member2.name + "'s membership has EXPIRED."
+END FUNCTION
