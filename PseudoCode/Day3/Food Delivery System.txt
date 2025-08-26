@@ -1,0 +1,84 @@
+CLASS Customer
+    ATTRIBUTES:
+        name
+        address
+        phone
+    
+    CONSTRUCTOR Customer(name, address, phone):
+        this.name = name
+        this.address = address
+        this.phone = phone
+    
+    METHOD displayInfo():
+        PRINT "Customer: " + name
+        PRINT "Address: " + address
+        PRINT "Phone: " + phone
+END CLASS
+
+
+CLASS Restaurant
+    ATTRIBUTES:
+        name
+        location
+    
+    CONSTRUCTOR Restaurant(name, location):
+        this.name = name
+        this.location = location
+    
+    METHOD displayInfo():
+        PRINT "Restaurant: " + name
+        PRINT "Location: " + location
+END CLASS
+
+
+CLASS DeliveryBoy
+    ATTRIBUTES:
+        name
+        contact
+    
+    CONSTRUCTOR DeliveryBoy(name, contact):
+        this.name = name
+        this.contact = contact
+    
+    METHOD displayInfo():
+        PRINT "Delivery Boy: " + name
+        PRINT "Contact: " + contact
+END CLASS
+
+
+CLASS Order
+    ATTRIBUTES:
+        customer      // has-a Customer
+        restaurant    // has-a Restaurant
+        deliveryBoy   // has-a DeliveryBoy
+        foodItem
+        price
+    
+    CONSTRUCTOR Order(customer, restaurant, deliveryBoy, foodItem, price):
+        this.customer = customer
+        this.restaurant = restaurant
+        this.deliveryBoy = deliveryBoy
+        this.foodItem = foodItem
+        this.price = price
+    
+    METHOD displayOrderDetails():
+        PRINT "----- Order Details -----"
+        customer.displayInfo()
+        restaurant.displayInfo()
+        deliveryBoy.displayInfo()
+        PRINT "Food Item: " + foodItem
+        PRINT "Price: " + price
+END CLASS
+
+
+// MAIN PROGRAM
+FUNCTION Main():
+    c1 = NEW Customer("Ravi", "Park Street, Kolkata", "9876543210")
+    r1 = NEW Restaurant("Foodie's Hub", "Salt Lake, Kolkata")
+    d1 = NEW DeliveryBoy("Arjun", "9123456789")
+    
+    order1 = NEW Order(c1, r1, d1, "Paneer Butter Masala", 250)
+    
+    PRINT "Food Delivery System Running..."
+    CALL order1.displayOrderDetails()
+END FUNCTION

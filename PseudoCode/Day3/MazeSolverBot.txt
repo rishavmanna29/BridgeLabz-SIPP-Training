@@ -1,0 +1,37 @@
+ALGORITHM MazeSolverBot
+START
+    CLASS Maze
+        ATTRIBUTE: grid[][]          // 2D array representing maze
+        ATTRIBUTE: rows, cols
+
+        CONSTRUCTOR(grid)
+            SET this.grid = grid
+            SET rows = number of rows in grid
+            SET cols = number of columns in grid
+        END CONSTRUCTOR
+
+        METHOD isSafe(x, y)
+            RETURN (x >= 0 AND x < rows AND y >= 0 AND y < cols AND grid[x][y] = 0)
+        END METHOD
+
+        METHOD solveMaze(x, y)
+            IF (x, y) is destination THEN
+                RETURN TRUE
+            END IF
+
+            IF isSafe(x, y) THEN
+                MARK grid[x][y] as visited
+
+                // Move in all 4 directions
+                IF solveMaze(x + 1, y) THEN RETURN TRUE
+                IF solveMaze(x, y + 1) THEN RETURN TRUE
+                IF solveMaze(x - 1, y) THEN RETURN TRUE
+                IF solveMaze(x, y - 1) THEN RETURN TRUE
+
+                UNMARK grid[x][y] as visited   // Backtracking
+            END IF
+
+            RETURN FALSE
+        END METHOD
+    END CLASS
+END

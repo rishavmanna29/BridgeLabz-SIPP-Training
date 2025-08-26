@@ -1,0 +1,18 @@
+ALGORITHM PaymentProcessor
+START
+    GENERIC CLASS Transaction<T>
+        ATTRIBUTE: transactionID
+        ATTRIBUTE: amount
+        ATTRIBUTE: paymentMethod OF TYPE T
+
+        CONSTRUCTOR(transactionID, amount, paymentMethod)
+            SET attributes
+        END CONSTRUCTOR
+
+        METHOD processTransaction()
+            PRINT "Processing transaction of amount " + amount + " via " + paymentMethod
+        END METHOD
+    END CLASS
+
+    
+END

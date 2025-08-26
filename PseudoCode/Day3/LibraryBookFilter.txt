@@ -1,0 +1,20 @@
+ALGORITHM LibraryBookFilter
+START
+    CLASS Book
+        ATTRIBUTES: title, author, yearPublished, rating
+        CONSTRUCTOR(title, author, yearPublished, rating)
+    END CLASS
+
+    CLASS Library
+        ATTRIBUTE: books LIST<Book>
+
+        METHOD addBook(book)
+            ADD book TO books
+        END METHOD
+
+        METHOD filterHighRatedRecentBooks()
+            filteredBooks ← FILTER books WHERE book.yearPublished > 2015 AND book.rating > 4.5 USING stream
+            RETURN filteredBooks
+        END METHOD
+    END CLASS
+END
